@@ -1,0 +1,172 @@
+
+'''
+矩阵类
+该类初始化一个udp连接,远程端口为5000
+
+    矩阵类型:
+        Video矩阵		1
+        HDMI矩阵		1
+        SDI矩阵			1
+        DMX矩阵			1       
+        Audio矩阵        	1
+        DVI矩阵        		1
+        VGA矩阵        		1
+        YDV矩阵        		1
+        Video-Audio矩阵 	1
+        VGA-Audio矩阵        	1
+        YDV-Audio矩阵        	1
+        SDI-Audio矩阵       	1
+        DMX-Audio矩阵       	1
+    矩阵命令:
+	
+    矩阵端口:
+       1  0x000	0x30,0x30,0x30		37	0x30,0x32,0x34
+       2  0x001	0x30,0x30,0x31		38	0x30,0x32,0x35
+       3  0x002	0x30,0x30,0x32		39	0x30,0x32,0x36
+       4  0x003	0x30,0x30,0x33		40	0x30,0x32,0x37
+       5  0x004	0x30,0x30,0x34		41	0x30,0x32,0x38
+       6  0x005	0x30,0x30,0x35		42	0x30,0x32,0x39
+       7  0x006	0x30,0x30,0x36		43	0x30,0x32,0x41
+       8  0x007	0x30,0x30,0x37		44	0x30,0x32,0x42
+       9  0x008	0x30,0x30,0x38		45	0x30,0x32,0x43
+       10 0x009	0x30,0x30,0x39		46	0x30,0x32,0x44
+       11 0x00A	0x30,0x30,0x41		47	0x30,0x32,0x45
+       12 0x00B	0x30,0x30,0x42		48	0x30,0x32,0x46
+       13 0x00C	0x30,0x30,0x43		49	0x30,0x33,0x30
+       14 0x00D	0x30,0x30,0x44		50	0x30,0x33,0x31
+       15 0x00E	0x30,0x30,0x45		51	0x30,0x33,0x32
+       16 0x00F	0x30,0x30,0x46		52	0x30,0x33,0x33
+       17 0x010	0x30,0x31,0x30		53	0x30,0x33,0x34
+       18 0x011	0x30,0x31,0x31		54	0x30,0x33,0x35
+       19 0x012	0x30,0x31,0x32		55	0x30,0x33,0x36
+       20	0x30,0x31,0x33		56	0x30,0x33,0x37
+       21	0x30,0x31,0x34		57	0x30,0x33,0x38
+       22	0x30,0x31,0x35		58	0x30,0x33,0x39
+       23	0x30,0x31,0x36		59	0x30,0x33,0x41
+       24	0x30,0x31,0x37		60	0x30,0x33,0x42
+       25	0x30,0x31,0x38		61	0x30,0x33,0x43
+       26	0x30,0x31,0x39		62	0x30,0x33,0x44
+       27	0x30,0x31,0x41		63	0x30,0x33,0x45
+       28	0x30,0x31,0x42		64	0x30,0x33,0x46
+       29	0x30,0x31,0x43		65	0x30,0x34,0x30
+       30	0x30,0x31,0x44		66	0x30,0x34,0x31
+       31	0x30,0x31,0x45		67	0x30,0x34,0x32
+       32	0x30,0x31,0x46		68	0x30,0x34,0x33
+       33	0x30,0x32,0x30		69	0x30,0x34,0x34
+       34	0x30,0x32,0x31		70	0x30,0x34,0x35
+       35	0x30,0x32,0x32		71	0x30,0x34,0x36
+       36	0x30,0x32,0x33		72	0x30,0x34,0x37
+'''
+
+
+
+from enum import Enum
+
+'''
+01 3031 5752 56 303030303030353204
+01 3031 5752 48 303030303030344304
+01 3031 5752 53 303030303030353704
+01 3031 5752 4D 303030303030343904
+01 3031 5752 41 303030303030343504
+01 3031 5752 44 303030303030343004
+01 3031 5752 47 303030303030343304
+01 3031 5752 59 303030303030354404
+
+01 3031 5752 42 303030303030343604
+01 3031 5752 43 303030303030343704
+01 3031 5752 45 303030303030343104
+01 3031 5752 46 303030303030343204
+01 3031 5752 4B 303030303030344604
+'''
+
+#@unique
+class MatrixType(Enum):
+    Video = '56'
+    HDMI = '48'
+    SDI	= '53'
+    DMX	= '4D'
+    Audio = '41'
+    DVI = '44'
+    VGA = '47'
+    YDV = '59'
+    Video_Audio = '42'
+    VGA_Audio = '43'
+    YDV_Audio = '45'
+    SDI_Audio = '46'
+    DMX_Audio = '4B'
+        
+class Port():
+    def intToHexStr(self, port):
+        res = hex(port - 1)[2:]
+
+        if(len(res)<3):
+            if(len(res)<2):
+                res = '00'+res
+            else:
+                res = '0'+res
+        
+        result = "".join([format(ord(i), "02X") for i in res])
+        return result
+
+class MatrixID():
+    def intToHexStr(self, num):
+        res = hex(num)[2:]
+
+        if(len(res)<2):
+            res = '0'+res
+        
+        result = "".join([format(ord(i), "02X") for i in res])
+        return result
+'''
+
+华通矩阵 
+
+发送命令
+解析命令
+
+'''
+class HatonMatrix():
+    def __init__(self):
+        return 
+
+    '''
+    得到校验码 校验码计算方法是 所有字符进行异或 xor
+    '''
+    def get_chk(self, content):
+        CHK = 0
+        for i in range(0, len(content), 2):
+            bit_str = content[i: i+2]
+            other = int(bit_str, 16)
+            CHK = CHK ^ other
+
+        # 获取16进制运算结果 字符串
+        chr_str = str(hex(CHK)[2:])
+
+        # 对结果每一十六进制位进行ascii码转换
+        f = hex(ord(chr_str[:1]))[2:]
+        t = hex(ord(chr_str[1:]))[2:]
+
+        return f + t
+    
+    '''
+    创建UDP字符串
+    '''
+    def createUDPHex(self, matrixID=1, command='5752', matrixType=MatrixType.DMX, inPort=1, outPort=1):
+        in_port = Port().intToHexStr(inPort)
+        out_port = Port().intToHexStr(inPort)
+        
+        matrix_id = MatrixID().intToHexStr(inPort)
+        
+        content = matrix_id + command + matrixType.value + out_port + in_port
+
+        chk = self.get_chk(content)
+        
+        hexStr = '01' + content + chk + '04'
+        
+        return hexStr
+        
+if __name__ == '__main__':
+    hexStr = HatonMatrix().createUDPHex()
+    print(hexStr)
+        
+        
